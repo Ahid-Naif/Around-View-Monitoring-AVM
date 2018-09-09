@@ -1,0 +1,3 @@
+Longest Time: 0.494608 
+Shortest Time: 0.256949 
+

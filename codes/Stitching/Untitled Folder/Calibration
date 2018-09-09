@@ -1,0 +1,24 @@
+# termination criteria
+#criteria = (cv2.TERM_CRITERIA_EPS + cv2.TERM_CRITERIA_MAX_ITER, 30, 0.001)
+# prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
+#objp = np.zeros((5*5,3), np.float32)
+#objp[:,:2] = np.mgrid[0:5,0:5].T.reshape(-1,2)
+# Arrays to store object points and image points from all the images.
+#objectPoints = [] # 3d point in real world space
+#imagePoints = [] # 2d points in image plane.
+
+image = cv2.imread(args["image"])
+gray = cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
+
+# Find the chess board corners
+#ret, corners = cv2.findChessboardCorners(gray, (5,5), None)
+# If found, add object points, image points (after refining them)
+#if ret:
+#    objectPoints.append(objp)
+#    cv2.cornerSubPix(gray,corners,(11,11),(-1,-1),criteria)
+#    imagePoints.append(corners)
+    # Draw and display the corners
+    #cv2.drawChessboardCorners(image, (5,5), corners, ret)
+    #cv2.imshow('image', image)
+    #cv2.waitKey()
+#    ret, mtx, dist, _1, _2 = cv2.calibrateCamera(objectPoints, imagePoints, gray.shape[::-1], None, None)
