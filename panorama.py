@@ -1,21 +1,15 @@
-import argparse
 import cv2
 import imutils
 from imutils.video import FPS
 
 from myPackage.Stitch import stitchTwoImages
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", required=True, help="Path to the video file")
-args = vars(ap.parse_args())
-
 count = 0
 totalTime = 0
 mergedImage = 0
-video = cv2.VideoCapture(args["video"])
+video = cv2.VideoCapture("dataset/IMG_5006.MOV")
 while True:
     isGrabbed, frame = video.read()
-
 
     if(not isGrabbed):
         break
