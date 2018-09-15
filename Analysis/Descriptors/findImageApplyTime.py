@@ -11,9 +11,9 @@ import glob
 totalTime = 0
 for x in range(0,99):
     subTotalTime = 0
-    for filePath in glob.glob("dataset/Images/Random/*"):
+    for imagePath in glob.glob("dataset/Images/Random/*"):
 
-        image = cv2.imread(filePath)
+        image = cv2.imread(imagePath)
         
         ORB = detectKeypoints(image)
         (outputImage, keypoints) = ORB.detectORB(True)
