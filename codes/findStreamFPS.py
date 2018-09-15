@@ -21,4 +21,4 @@ video.release()
 
 end = datetime.datetime.now()
 frameRate = numFrames/(end - start).total_seconds()
-print "Approximate fps is %(fps)d: "%{"fps": frameRate}
+print ("Approximate fps is %(fps)d: "%{"fps": frameRate})
