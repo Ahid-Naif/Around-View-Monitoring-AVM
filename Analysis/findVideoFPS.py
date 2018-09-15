@@ -1,11 +1,6 @@
-import argparse
 import cv2
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-v", "--video", required=True, help="Path to the video file")
-args = vars(ap.parse_args())
-
-video = cv2.VideoCapture(args["video"])
+video = cv2.VideoCapture("dataset/testVideo.mp4")
 while True:
     isGrabbed, frame = video.read()
 
