@@ -13,7 +13,6 @@ while True:
     if key == ord("q"):
         break
 
-
-fps = video.get(cv2.CAP_PROP_FPS);
+fps = video.get(cv2.CAP_PROP_FPS)
 print("fps is: {:.2f}".format(fps))
 video.release()
