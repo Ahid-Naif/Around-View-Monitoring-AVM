@@ -1,44 +1,47 @@
-# import the necessary packages
-from __future__ import print_function
-import numpy as np
-import argparse
 import cv2
+import numpy as np
 from myPackage.KeyPointDetectors import detectKeypoints
-from myPackage.KeyPointsDescriptors import computeKeypoints
 
-# construct the argument parser and parse the arguments
-ap = argparse.ArgumentParser()
-ap.add_argument("-f", "--first", required=True, help="Path to first image")
-ap.add_argument("-s", "--second", required=True, help="Path to second image")
-args = vars(ap.parse_args())
+img1 = cv2.imread("dataset/Panorama_Images/bryce_right_02.png") # queryImage -- right image
+img2 = cv2.imread("dataset/Panorama_Images/bryce_left_02.png") # trainImage -- left image
+matcher = cv2.DescriptorMatcher_create("BruteForce")
 
-image1 = cv2.imread(args["first"])
-image2 = cv2.imread(args["second"])
+#SURF1 = KeyPoints(img1)
+#kps1 = SURF1.getSURF(drawKeyPoints=False)
+#SURF2 = KeyPoints(img2)
+#kps2 = SURF2.getSURF(drawKeyPoints=False)
 
-# Initiate ORB detector
-ORB = cv2.ORB_create()
+SIFT1 = cv2.xfeatures2d.SIFT_create()
+(kps1, des1) = SIFT1.detectAndCompute(img1, None)
+kps1 = np.float32([kp.pt for kp in kps1])
+SIFT2 = cv2.xfeatures2d.SIFT_create()
+(kps2, des2) = SIFT2.detectAndCompute(img2, None)
+kps2 = np.float32([kp.pt for kp in kps2])
 
-det1 = detectKeypoints(image1)
-(_, kps1) = det1.detectORB(True)
-des1 = computeKeypoints(image1, kps1)
-kps1, des1 = des1.computeORB()
+matchedKps = matcher.knnMatch(des1, des2, 2)
+matches = []
 
-det2 = detectKeypoints(image2)
-(_, kps2) = det2.detectORB(True)
-des2 = computeKeypoints(image2, kps2)
-kps2, des2 = des2.computeORB()
+for oneMatch in matchedKps:
+    if len(oneMatch) == 2 and oneMatch[0].distance < oneMatch[1].distance*0.75:
+        matches.append((oneMatch[0].trainIdx, oneMatch[0].queryIdx))
 
-# create BFMatcher object
-matcher = cv2.BFMatcher(cv2.NORM_HAMMING, crossCheck=True)
+if len(matches) > 4:
+    points1 = np.float32([kps1[i] for (_, i) in matches])
+    points2 = np.float32([kps2[i] for (i, _) in matches])
 
-matches = matcher.match(des1, des2)
+    (homographyMatrix, status) = cv2.findHomography(points1, points2, cv2.RANSAC, 4)
 
-# Sort them in the order of their distance.
-matches = sorted(matches, key=lambda x: x.distance)
-# initialize the output visualization image
-image3 = cv2.drawMatches(image1,kps1,image2,kps2,matches[0:30],outImg=image2,flags=2)
+    newHeight = img1.shape[0]
+    newWidth = img1.shape[1] + img2.shape[1]
+    # warp the img1 which is on the right
+    result = cv2.warpPerspective(img1, homographyMatrix, (newWidth, newHeight))
 
-print("# of matched keypoints: {}".format(len(matches)))
-cv2.imshow("Output", image3)
-cv2.imwrite("ORB.jpg", image3)
+    result[0:img2.shape[0], 0:img2.shape[1]] = img2
+
+cv2.imshow("Result", result)
+cv2.imwrite("result.png", result)
 cv2.waitKey()
+
+#print("# of matched keypoints: {}".format(len(matches)))
+#print("# of keypoints from first image: {}".format(len(kps1)))
+#print("# of keypoints from second image: {}".format(len(kps2)))
