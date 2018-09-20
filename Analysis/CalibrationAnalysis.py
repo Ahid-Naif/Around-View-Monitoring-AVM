@@ -1,9 +1,19 @@
 import cv2
 from myPackage.Calibration import calibrate
 
-rawImage = cv2.imread("FrontRaw")
+video = cv2.VideoCapture(1)
 
-calibratedImage = calibrate(rawImage)
+while True:
+    isGrabbed, frame = video.read()
 
-cv2.imshow("Calibrated Image", calibratedImage)
-cv2.waitKey()
+    if not isGrabbed:
+        break
+    
+    calibratedImage = calibrate(frame)
+    cv2.imshow("Calibrated Image", calibratedImage)
+    
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        break
+
+cv2.destroyAllWindows()
