@@ -13,9 +13,9 @@ def calibrate(img):
     H32 = 8
     H33 = 9
 
-    K = np.array([[H11], [H12], [H13],
-                  [H21], [H22], [H23],
-                  [H31], [H32], [H33]])
+    K = np.array([[H11, H12, H13],
+                  [H21, H22, H23],
+                  [H31, H32, H33]])
 
     D = np.array([0.0, 0.0, 0.0, 0.0]) # ignore distortion vector for the moment
 
