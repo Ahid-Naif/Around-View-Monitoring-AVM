@@ -22,10 +22,10 @@ imageShape = None
 objectPoints = [] # 3d/real world coordinates
 imagePoints  = [] # 2d coordinates
 
-images = glob.glob('*.jpg')
+video = cv2.VideoCapture(1)
 
-for filePath in images:
-    image = cv2.imread(filePath)
+while True:
+    isGrabbed, image = video.read()
 
     if imageShape == None:
         imageShape = image.shape[0:2]
@@ -40,7 +40,14 @@ for filePath in images:
         corners = cv2.cornerSubPix(gray, corners, (3,3), (-1,-1), subpixCriteria)
         imagePoints.append(corners)
 
+    cv2.imshow("Video", image)
+    key = cv2.waitKey(1) & 0xFF
+    if key == ord("q"):
+        break
+
 numPoints = len(objectPoints)
+print("Found " + str(numPoints) + " foud images for calibration")
+
 K = np.zeros((3,3))
 D = np.zeros((4,1))
 rotationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(numPoints)]
