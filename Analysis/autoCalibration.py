@@ -1,31 +1,20 @@
 import cv2
 import numpy as np
 import glob
-from myPackage.CalibrationTimer import CalibrationTimer
 from myPackage.Calibration import FisheyeCalibration
-from threading import Timer
-import threading
 
 calibrationFlags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC + cv2.fisheye.CALIB_CHECK_COND +cv2.fisheye.CALIB_FIX_SKEW
 
 video = cv2.VideoCapture(0)
-timer = CalibrationTimer(5)
 while True:
     isGrabbed, frame = video.read()
     if not isGrabbed:
         break
+        
+    fisheyeCalibration = FisheyeCalibration(6,9) 
     
-    #t = Timer(5.0, timer.count)
-    #t.start()
-    thread = threading.Thread(target=timer.count).start()
-    thread = True
-    thread.start()
-    print(timer.readTimer())
-    
-    #fisheyeCalibration = FisheyeCalibration(6,9) 
-    
-    if timer.readTimer() == 0:
-        timer.stop()
+    #if timer.readTimer() == 0:
+     #   timer.stop()
      #   fisheyeCalibration.processFrame(frame)
 
     cv2.imshow("Video", frame)
