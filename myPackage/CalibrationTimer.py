@@ -1,30 +1,27 @@
 import cv2
-from threading import Thread
-import time
 
 class CalibrationTimer(object):
     def __init__(self, maxValue):
+        self.initialTimerValue = maxValue
         self.timerValue = maxValue
         self.stopped = False
-    def start(self):
-        Thread(target=self.count, args=()).start()
-        self.resetTimer()
     
-    def count(self):
-        while True:
-            time.sleep(1)
-            self.timerValue = 3
+    def count(self): 
+        while True:           
+            self.timerValue -= 1
             if self.timerValue < 0:
                 self.resetTimer()
-            
             if self.stopped:
-                return 
+                return
+    
+    def start(self):
+        self.resetTimer()
 
     def readTimer(self):
         return self.timerValue
 
     def resetTimer(self):
-        self.timer = 5
+        self.timerValue = self.initialTimerValue
         self.stopped = False
     
     def stop(self):
