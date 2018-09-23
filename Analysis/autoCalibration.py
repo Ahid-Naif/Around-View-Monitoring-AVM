@@ -5,6 +5,7 @@ from myPackage.Calibration import FisheyeCalibration
 
 calibrationFlags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC + cv2.fisheye.CALIB_CHECK_COND +cv2.fisheye.CALIB_FIX_SKEW
 
+#for imagePath in glob.glob("dataset/Images/Random/*"):
 video = cv2.VideoCapture(0)
 while True:
     isGrabbed, frame = video.read()
@@ -20,7 +21,6 @@ while True:
     cv2.imshow("Video", frame)
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
-        timer.stop()
         break
     
     
