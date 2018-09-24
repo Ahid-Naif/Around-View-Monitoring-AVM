@@ -62,8 +62,8 @@ class FisheyeCalibration:
     
     def findOptimalK_D(self):
         self.numPoints = len(self.objectPoints)
-        rotationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(numPoints)]
-        translationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(numPoints)]
+        rotationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(self.numPoints)]
+        translationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(self.numPoints)]
         
         _, self.K, self.D, _, _ = cv2.fisheye.calibrate(
                 self.objectPoints, 
@@ -82,3 +82,9 @@ class FisheyeCalibration:
         print("DIM=" + str(self.imageShape[::-1]))
         print("K= (" + str(self.K.tolist()) + ")")
         print("D= (" + str(self.D.tolist()) + ")")
+
+    def storeK_D(self):
+        file = open("K_D_Values", "w+")
+        file.write("DIM=" + str(self.imageShape[::-1])+"\n")
+        file.write("K= (" + str(self.K.tolist()) + ")\n")
+        file.write("D= (" + str(self.D.tolist()) + ")\n")
