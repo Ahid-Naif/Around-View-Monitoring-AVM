@@ -22,30 +22,7 @@ class FisheyeCalibration:
         self.D = np.zeros((4,1))
         self.numPoints = 0
         self.calibrationFlags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC + cv2.fisheye.CALIB_CHECK_COND +cv2.fisheye.CALIB_FIX_SKEW
-    def calibrate(self, img):
-
-        H11 = 2350.6
-        H12 = 0
-        H13 = 314.3
-        H21 = 0
-        H22 = 237.5
-        H23 = 233.2
-        H31 = 0.0
-        H32 = 0.0
-        H33 = 1.0
-
-        K = np.array([[H11, H12, H13],
-                    [H21, H22, H23],
-                    [H31, H32, H33]])
-
-        D = np.array([[0.01535], [-0.1092], [0.1003], [-0.03689]]) # ignore distortion vector for the moment
-
-        Knew = np.identity(3, dtype=float)
-
-        undistortedImage = cv2.fisheye.undistortImage(img, K, D=D, Knew=Knew) # how does work?
-
-        return undistortedImage
-
+    
     def processFrame(self, image):
         if self.imageShape == None:
             self.imageShape = image.shape[0:2]
@@ -62,8 +39,8 @@ class FisheyeCalibration:
     
     def findOptimalK_D(self):
         self.numPoints = len(self.objectPoints)
-        rotationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(numPoints)]
-        translationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(numPoints)]
+        rotationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(self.numPoints)]
+        translationVectors = [np.zeros((1,1,3), dtype=np.float64) for i in range(self.numPoints)]
         
         _, self.K, self.D, _, _ = cv2.fisheye.calibrate(
                 self.objectPoints, 
@@ -82,3 +59,22 @@ class FisheyeCalibration:
         print("DIM=" + str(self.imageShape[::-1]))
         print("K= (" + str(self.K.tolist()) + ")")
         print("D= (" + str(self.D.tolist()) + ")")
+
+    def storeK_D(self):
+        file = open("K_D_Values.txt", "w+")
+        file.write("width  = " + str(self.imageShape[::-1][0])+"\n")
+        file.write("height = " + str(self.imageShape[::-1][1])+"\n")
+        
+        file.write("fx = "+str(self.K[0][0])+ "\n")
+        file.write("fy = "+str(self.K[1][1])+ "\n")
+        file.write("cx = "+str(self.K[0][2])+ "\n")
+        file.write("cy = "+str(self.K[1][2])+ "\n")
+
+        file.write("dOne = "+str(self.D[0][0])+ "\n")
+        file.write("dTwo = "+str(self.D[1][0])+ "\n")
+        file.write("dThree = "+str(self.D[2][0])+ "\n")
+        file.write("dFour = "+str(self.D[3][0])+ "\n")
+
+        file.close()
+
+

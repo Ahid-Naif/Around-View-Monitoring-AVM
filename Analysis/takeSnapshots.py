@@ -1,6 +1,6 @@
 import cv2
 
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture(1)
 
 counter = 0
 while True:
@@ -14,4 +14,4 @@ while True:
         break
     elif key == ord("s"):
         counter += 1
-        cv2.imwrite("image_no_"+str(counter)+".jpg", frame)
+        cv2.imwrite("dataset/Calibration/image_no_"+str(counter)+".jpg", frame)
