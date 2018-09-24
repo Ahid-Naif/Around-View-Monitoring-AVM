@@ -61,10 +61,21 @@ class FisheyeCalibration:
         print("D= (" + str(self.D.tolist()) + ")")
 
     def storeK_D(self):
-        file = open("K_D_Values", "w+")
-        file.write("DIM=" + str(self.imageShape[::-1])+"\n")
-        file.write("K= (" + str(self.K.tolist()) + ")\n")
-        file.write("D= (" + str(self.D.tolist()) + ")\n")
+        file = open("K_D_Values.txt", "w+")
+        file.write("width  = " + str(self.imageShape[::-1][0])+"\n")
+        file.write("height = " + str(self.imageShape[::-1][1])+"\n")
+        
+        file.write("fx = "+str(self.K[0][0])+ "\n")
+        file.write("fy = "+str(self.K[1][1])+ "\n")
+        file.write("cx = "+str(self.K[0][2])+ "\n")
+        file.write("cy = "+str(self.K[1][2])+ "\n")
+
+        file.write("dOne = "+str(self.D[0][0])+ "\n")
+        file.write("dTwo = "+str(self.D[1][0])+ "\n")
+        file.write("dThree = "+str(self.D[2][0])+ "\n")
+        file.write("dFour = "+str(self.D[3][0])+ "\n")
+
+        file.close()
 
     def calibrate(self, img):
 
