@@ -13,8 +13,8 @@ class UndistortFisheye:
         self.cy = 0.0
         self.dOne  = 0.0
         self.dTwo  = 0.0
-        self.Three = 0.0
-        self.Four  = 0.0
+        self.dThree = 0.0
+        self.dFour  = 0.0
 
         regexVariable = r"(\w*)"
         regexValue = r"[-+]?\d*\.\d+|\d+"
