@@ -58,24 +58,7 @@ class UndistortFisheye:
         undistortedImage = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
         return undistortedImage
 
-    def undistort2(self, image, balance=0, dim2=None, dim3=None):
-        dim1 = image.shape[:2][::-1]
-        assert dim1[0]/dim1[1] == self.DIM[0]/self.DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"
-
-        if not dim2:
-            dim2 = dim1
-        if not dim3:
-            dim3 = dim1
-        
-        Kscaled = self.K * dim1[0]/self.DIM[0] # The values of K is to scale with image dimension
-        Kscaled[2][2] = 1 # the value in 2nd row & 2nd column of K matrix is always 1
-
-        Knew = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(Kscaled, self.D, dim2, np.eye(3), balance=balance)
-        map1, map2 = cv2.fisheye.initUndistortRectifyMap(Kscaled, self.D, np.eye(3), Knew, dim3, cv2.CV_16SC2)
-        undistortedImage = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
-        return undistortedImage
-
-    def calibrate(self, image, balance=0, dim2=None):
+    def undistort2(self, image, balance=0, dim2=None):
         dim1 = image.shape[:2][::-1]
         assert dim1[0]/dim1[1] == self.DIM[0]/self.DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"
 
