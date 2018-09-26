@@ -26,9 +26,9 @@ class UndistortFisheye:
             self.setMember(variable[0], value[0])
 
         self.DIM = (self.width, self.height)
-        self.K = np.array([[self.fx, 0.0    , self.cx],
-                          [0.0     , self.fy, self.fy],
-                          [0.0     , 0.0    ,     1.0]])
+        self.K = np.array([[self.fx,0.0,self.cx],
+                          [0.0,self.fy,self.fy],
+                          [0.0,0.0,1.0]])
         self.D = np.array([[self.dOne], [self.dTwo], [self.dThree], [self.dFour]])
 
     def setMember(self, variable, value):
