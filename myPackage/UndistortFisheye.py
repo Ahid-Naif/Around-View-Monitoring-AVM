@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import re
-
+from myPackage.myTrackBar import  customizedTrackBar
 
 class UndistortFisheye:
     def __init__(self):
@@ -31,6 +31,14 @@ class UndistortFisheye:
                           [0.0,0.0,1.0]])
         self.D = np.array([[self.dOne], [self.dTwo], [self.dThree], [self.dFour]])
 
+        self.tuneMin = -0.5
+        self.tuneMax = 0.5
+        self.tuneStep = 0.0001
+        self.d1TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dOne, "d1", "Tuning")
+        self.d2TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dTwo, "d2", "Tuning")
+        self.d3TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dThree, "d3", "Tuning")
+        self.d4TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dFour, "d4", "Tuning")
+
     def setMember(self, variable, value):
         if variable == "width":
             self.width = int(value)
@@ -53,12 +61,21 @@ class UndistortFisheye:
         elif variable == "dFour":
             self.dFour = float(value)
 
+    def tuneDistortionVictor(self):
+        d1 = self.d1TrackBar.getValue()
+        d2 = self.d2TrackBar.getValue()
+        d3 = self.d3TrackBar.getValue()
+        d4 = self.d4TrackBar.getValue()
+        self.D = np.array([[d1], [d2], [d3], [d4]])
+
     def undistort(self, image):
+        self.tuneDistortionVictor()
         map1, map2 = cv2.fisheye.initUndistortRectifyMap(self.K, self.D, np.eye(3), self.K, self.DIM, cv2.CV_16SC2)
         undistortedImage = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
         return undistortedImage
 
     def undistort2(self, image, balance=0, dim2=None):
+        self.tuneDistortionVictor()
         dim1 = image.shape[:2][::-1]
         assert dim1[0]/dim1[1] == self.DIM[0]/self.DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"
 
