@@ -28,6 +28,6 @@ while True:
     if key == ord("q"):
         break
     if key == ord("s"):
-        cv2.imwrite("RawImage.jpg", frame)
+        cv2.imwrite("RawImage2.jpg", frame)
 
 cv2.destroyAllWindows()

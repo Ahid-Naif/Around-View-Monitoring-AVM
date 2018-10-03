@@ -1,6 +1,6 @@
 import cv2
 
-video = cv2.VideoCapture(1)
+video = cv2.VideoCapture(0)
 
 counter = 0
 while True:
