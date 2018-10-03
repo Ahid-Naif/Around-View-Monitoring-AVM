@@ -1,6 +1,6 @@
 import cv2
 import glob
-from myPackage.Calibration import FisheyeCalibration
+from myPackage.FisheyeCalibration import FisheyeCalibration
 
 fisheyeCalibration = FisheyeCalibration(6,9) 
 
