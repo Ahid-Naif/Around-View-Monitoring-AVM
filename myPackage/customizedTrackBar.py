@@ -1,7 +1,7 @@
 import cv2
 
 class customizedTrackBar:
-    def __init__(self, desiredStart, step, desiredEnd, defaultValue,description, windowName):
+    def __init__(self, desiredStart, step, desiredEnd, defaultValue, description, windowName):
         self.description = description
         self.windowName = windowName
 
@@ -12,7 +12,7 @@ class customizedTrackBar:
         self.start = 0
         self.end = (self.desiredEnd - self.desiredStart)*self.step
 
-        cv2.namedWindow(windowName)
+        cv2.namedWindow(windowName, cv2.WINDOW_FREERATIO)
         self.createCutomizedTrackBar()
         self.setDefaultPosition()
 
