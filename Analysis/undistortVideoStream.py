@@ -5,8 +5,8 @@ import glob
 
 def doNothing(_):
     pass
-cv2.namedWindow("Undistorted")
-cv2.createTrackbar("balance", "Undistorted", 0, 100, doNothing)
+# cv2.namedWindow("Undistorted")
+# cv2.createTrackbar("balance", "Undistorted", 0, 100, doNothing)
 
 video = cv2.VideoCapture(0)
 
@@ -17,17 +17,21 @@ while True:
     if not isGrabbed:
         break
 
-    balance = cv2.getTrackbarPos("balance", "Undistorted")/100
+    # balance = cv2.getTrackbarPos("balance", "Undistorted")/100
     clearImage1 = undistortFisheye.undistort(frame)
-    clearImage2 = undistortFisheye.undistort2(frame, balance=balance)
+    clearImage3 = undistortFisheye.undistort3(frame)
 
-    clearImages = np.hstack((clearImage1, clearImage2))
-    cv2.imshow("Undistorted", clearImages)
+    # clearImages = np.hstack((clearImage1, clearImage2))
+    cv2.imshow("Undistorted", clearImage1)
+    cv2.imshow("Undistorted3", clearImage3)
     # cv2.imshow("Video", frame)
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
         break
     if key == ord("s"):
-        cv2.imwrite("RawImage2.jpg", frame)
+        cv2.imwrite("Capture2.jpg", clearImage1)
+    
+    if key == ord("r"):
+        undistortFisheye.reset()    
 
 cv2.destroyAllWindows()
