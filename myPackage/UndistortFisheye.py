@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 import re
-from myPackage.myTrackBar import  customizedTrackBar
+from myPackage.customizedTrackBar import  customizedTrackBar
 
 class UndistortFisheye:
     def __init__(self):
@@ -90,3 +90,9 @@ class UndistortFisheye:
         undistortedImage = cv2.fisheye.undistortImage(image, self.K, D=self.D, Knew=Knew) # how does work?
 
         return undistortedImage
+    
+    def reset(self):
+        self.d1TrackBar.setDefaultPosition()
+        self.d2TrackBar.setDefaultPosition()
+        self.d3TrackBar.setDefaultPosition()
+        self.d4TrackBar.setDefaultPosition()
