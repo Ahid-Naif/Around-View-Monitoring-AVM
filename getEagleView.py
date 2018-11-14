@@ -4,7 +4,7 @@ import numpy as np
 import cv2
 
 eagleView = EagleView()
-image = cv2.imread("Capture2.jpg")
+image = cv2.imread("Capture.jpg")
 
 width = image.shape[0]
 height = image.shape[1]
@@ -20,12 +20,7 @@ bottomRight_YBar = customizedTrackBar(0, 1, width, width - 1, "y_bottomRight", "
 
 bottomLeft_XBar = customizedTrackBar(0, 1, height, 0, "x_bottomLeft", "Tuning Parameters")
 bottomLeft_YBar = customizedTrackBar(0, 1, width, width - 1, "y_bottomLeft", "Tuning Parameters")
-"""
-(44, 335)
-(210, 108)
-(425, 115)
-(587, 345)
-"""
+
 while True:
     topLeft = (int(topLeft_XBar.getValue()), int(topLeft_YBar.getValue()))
     topRight = (int(topRight_XBar.getValue()), int(topRight_YBar.getValue()))

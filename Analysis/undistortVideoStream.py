@@ -19,11 +19,9 @@ while True:
 
     # balance = cv2.getTrackbarPos("balance", "Undistorted")/100
     clearImage1 = undistortFisheye.undistort(frame)
-    clearImage3 = undistortFisheye.undistort3(frame)
 
     # clearImages = np.hstack((clearImage1, clearImage2))
     cv2.imshow("Undistorted", clearImage1)
-    cv2.imshow("Undistorted3", clearImage3)
     # cv2.imshow("Video", frame)
     key = cv2.waitKey(1) & 0xFF
     if key == ord("q"):
