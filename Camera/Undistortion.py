@@ -1,8 +1,7 @@
 import cv2
 import numpy as np
 import re
-from myPackage.customizedTrackBar import  customizedTrackBar
-
+from TrackBar.customizedTrackBar import customizedTrackBar
 class UndistortFisheye:
     def __init__(self, cameraName, tune=False):
         self.tune = tune
