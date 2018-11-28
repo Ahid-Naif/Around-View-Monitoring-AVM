@@ -23,4 +23,5 @@ while True:
         break
     elif key == ord("s"):
         counter += 1
+        print(counter)
         cv2.imwrite("Calibration_Images/"+ cameraName +"/image_no_"+str(counter)+".jpg", frame)
