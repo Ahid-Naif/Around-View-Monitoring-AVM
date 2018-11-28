@@ -4,7 +4,8 @@ import re
 from myPackage.customizedTrackBar import  customizedTrackBar
 
 class UndistortFisheye:
-    def __init__(self):
+    def __init__(self, cameraName, tune=False):
+        self.tune = tune
         self.width  = 0
         self.height = 0
         self.fx = 0.0
@@ -18,7 +19,7 @@ class UndistortFisheye:
 
         regexVariable = r"(\w*)"
         regexValue = r"[-+]?\d*\.\d+|\d+"
-        file = open("K_D_Values.txt", "r")
+        file = open("Parameters/K_D_Values_" + cameraName + ".txt", "r")
         lines = file.readlines()
         for line in lines:
             variable = re.findall(regexVariable, line)
@@ -31,13 +32,14 @@ class UndistortFisheye:
                           [0.0,0.0,1.0]])
         self.D = np.array([[self.dOne], [self.dTwo], [self.dThree], [self.dFour]])
 
-        self.tuneMin = -0.5
-        self.tuneMax = 0.5
-        self.tuneStep = 0.0001
-        self.d1TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dOne, "d1", "Tuning")
-        self.d2TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dTwo, "d2", "Tuning")
-        self.d3TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dThree, "d3", "Tuning")
-        self.d4TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dFour, "d4", "Tuning")
+        if self.tune:
+            self.tuneMin = -0.5
+            self.tuneMax = 0.5
+            self.tuneStep = 0.0001
+            self.d1TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dOne, "d1", "Tuning")
+            self.d2TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dTwo, "d2", "Tuning")
+            self.d3TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dThree, "d3", "Tuning")
+            self.d4TrackBar = customizedTrackBar(self.tuneMin, self.tuneStep, self.tuneMax, self.dFour, "d4", "Tuning")
 
     def setMember(self, variable, value):
         if variable == "width":
@@ -69,7 +71,8 @@ class UndistortFisheye:
         self.D = np.array([[d1], [d2], [d3], [d4]])
 
     def undistort(self, image):
-        self.tuneDistortionVictor()
+        if self.tune:
+            self.tuneDistortionVictor()
         map1, map2 = cv2.fisheye.initUndistortRectifyMap(self.K, self.D, np.eye(3), self.K, self.DIM, cv2.CV_16SC2)
         undistortedImage = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
         return undistortedImage
@@ -92,7 +95,8 @@ class UndistortFisheye:
         return undistortedImage
     
     def reset(self):
-        self.d1TrackBar.setDefaultPosition()
-        self.d2TrackBar.setDefaultPosition()
-        self.d3TrackBar.setDefaultPosition()
-        self.d4TrackBar.setDefaultPosition()
+        if self.tune:
+            self.d1TrackBar.setDefaultPosition()
+            self.d2TrackBar.setDefaultPosition()
+            self.d3TrackBar.setDefaultPosition()
+            self.d4TrackBar.setDefaultPosition()
