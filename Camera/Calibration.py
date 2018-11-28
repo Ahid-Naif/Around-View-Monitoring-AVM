@@ -26,7 +26,7 @@ class FisheyeCalibration:
         self.K = np.zeros((3,3))
         self.D = np.zeros((4,1))
         self.numPoints = 0
-        self.calibrationFlags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC + cv2.fisheye.CALIB_CHECK_COND +cv2.fisheye.CALIB_FIX_SKEW
+        self.calibrationFlags = cv2.fisheye.CALIB_RECOMPUTE_EXTRINSIC +cv2.fisheye.CALIB_FIX_SKEW
     
     def processFrame(self, image):
         if self.imageShape == None:
@@ -66,7 +66,7 @@ class FisheyeCalibration:
         print("D= (" + str(self.D.tolist()) + ")")
 
     def storeK_D(self):
-        file = open("K_D_Values_ " + self.cameraName + ".txt", "w+")
+        file = open("Parameters/K_D_Values_" + self.cameraName + ".txt", "w+")
         file.write("width  = " + str(self.imageShape[::-1][0])+"\n")
         file.write("height = " + str(self.imageShape[::-1][1])+"\n")
         
