@@ -11,7 +11,7 @@ height = chessboardDimension[1]
 cameraName = "Front_Camera"
 fisheyeCalibration = FisheyeCalibration(width, height, cameraName)
 
-imagesPaths = list(paths.list_images("Calibration_Images" + cameraName))
+imagesPaths = list(paths.list_images("Calibration_Images/" + cameraName))
 for imagePath in imagesPaths:
     image = cv2.imread(imagePath)
     
