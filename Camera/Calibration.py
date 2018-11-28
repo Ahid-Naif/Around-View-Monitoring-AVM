@@ -2,17 +2,22 @@ import cv2
 import numpy as np
 
 class FisheyeCalibration:
-    def __init__(self, width, height):
+    def __init__(self, chessboardWidth, chessboardHeight, cameraName):
+        self.chessboardDimension = (chessboardWidth, chessboardHeight)
+        self.chessboardWidth = chessboardWidth
+        self.chessboardHeight = chessboardHeight
+        self.cameraName = cameraName
+        
         self.imageShape = None
         self.objectPoints = [] # 3d/real world coordinates
         self.imagePoints  = [] # 2d coordinates
-        self.checkerboardDimension = (width, height)
+        
         """
-        / These two lines define the ideal internal corner in a checkerboard of any size 
-        / Z coordinates are assumed to be zero to make it simple
+        - These two lines define the ideal internal corner in a checkerboard of any size 
+        - Z coordinates are assumed to be zero to make it simple
         """
-        self.idealObjectPoints = np.zeros((1, self.checkerboardDimension[0]*self.checkerboardDimension[1], 3), np.float32)
-        self.idealObjectPoints[0,:,:2] = np.mgrid[0:self.checkerboardDimension[0], 0:self.checkerboardDimension[1]].T.reshape(-1,2)
+        self.idealObjectPoints = np.zeros((1, self.chessboardWidth * self.chessboardHeight, 3), np.float32)
+        self.idealObjectPoints[0,:,:2] = np.mgrid[0:self.chessboardWidth, 0:self.chessboardHeight].T.reshape(-1,2)
         """
         if we have 3x3 checker board, that means, there will be 9 corners
         Thus, output/objp will be (0,0), (1,0), (2,0), (0,1), (1,1), (2,1), (0,2), (1,2), (2,2)
@@ -31,7 +36,7 @@ class FisheyeCalibration:
         
         gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
 
-        ret, corners = cv2.findChessboardCorners(gray, self.checkerboardDimension, cv2.CALIB_CB_ADAPTIVE_THRESH+cv2.CALIB_CB_FAST_CHECK+cv2.CALIB_CB_NORMALIZE_IMAGE)
+        ret, corners = cv2.findChessboardCorners(gray, self.chessboardDimension, cv2.CALIB_CB_ADAPTIVE_THRESH+cv2.CALIB_CB_FAST_CHECK+cv2.CALIB_CB_NORMALIZE_IMAGE)
         if ret:
             self.objectPoints.append(self.idealObjectPoints)
             corners = cv2.cornerSubPix(gray, corners, (3,3), (-1,-1), self.subpixCriteria)
@@ -61,7 +66,7 @@ class FisheyeCalibration:
         print("D= (" + str(self.D.tolist()) + ")")
 
     def storeK_D(self):
-        file = open("K_D_Values.txt", "w+")
+        file = open("K_D_Values_ " + self.cameraName + ".txt", "w+")
         file.write("width  = " + str(self.imageShape[::-1][0])+"\n")
         file.write("height = " + str(self.imageShape[::-1][1])+"\n")
         
@@ -76,5 +81,3 @@ class FisheyeCalibration:
         file.write("dFour = "+str(self.D[3][0])+ "\n")
 
         file.close()
-
-
