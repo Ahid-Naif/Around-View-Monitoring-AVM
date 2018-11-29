@@ -10,8 +10,8 @@ class avm:
 
         self.__frontEagle = EagleView()
         self.__backEagle = EagleView()
-        self.__frontEagle.setDimensions((210, 108), (425, 115), (587, 345), (44, 335))
-        self.__backEagle.setDimensions((210, 108), (425, 115), (587, 345), (44, 335))
+        self.__frontEagle.setDimensions((188, 197), (478, 207), (579, 395), (96, 362))
+        self.__backEagle.setDimensions((171, 240), (469, 240), (603, 452), (52, 441))
     
     def runAVM(self, frontFrame, backFrame):
         frontView = self.__frontCamera.undistort(frontFrame)
@@ -19,6 +19,4 @@ class avm:
         backView = self.__backCamera.undistort(backFrame)
         topDown_Back = self.__backEagle.transfrom(backView)
 
-        birdView = np.vstack((topDown_Front, topDown_Back))
-
-        return birdView
+        return topDown_Front, topDown_Back
