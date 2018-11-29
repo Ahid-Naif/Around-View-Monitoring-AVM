@@ -62,5 +62,7 @@ while True:
         print("topRight: " + str(topRight))
         print("bottomRight: " + str(bottomRight))
         print("bottomLeft: " + str(bottomLeft))
+    elif key == ord("s"):
+        cv2.imwrite("Back_View.jpg", frame)
 
 cv2.destroyAllWindows()
