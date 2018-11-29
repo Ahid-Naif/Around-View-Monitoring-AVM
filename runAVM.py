@@ -6,15 +6,9 @@ backStream = cv2.VideoCapture(0)
 
 avm = avm()
 
-while True:
-    _, frontFrame = frontStream.read()
-    _, backFrame = backStream.read()
-
-    birdView = avm.runAVM(frontFrame, backFrame)
-    cv2.imshow("Bird's Eye View", birdView)
-
-    key = cv2.waitKey(1) & 0xFF
-    if key == ord("q"):
-        break
-
-cv2.destroyAllWindows()
+frontFrame = cv2.imread("Front_View.jpg")
+backFrame = cv2.imread("Back_View.jpg")
+frontView, backView = avm.runAVM(frontFrame, backFrame)
+cv2.imshow("Front Bird's Eye View", frontView)
+cv2.imshow("Back Bird's Eye View", backView)
+cv2.waitKey()
