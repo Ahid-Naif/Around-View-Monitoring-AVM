@@ -7,15 +7,15 @@ from Camera.Undistortion import UndistortFisheye
 from Camera.PerspectiveTransformation import EagleView
 
 frontStream = cv2.VideoCapture(0)
-backStream = cv2.VideoCapture(0)
+backStream = cv2.VideoCapture(1)
 
 frontCamera = UndistortFisheye("Front_Camera")
 backCamera = UndistortFisheye("Back_Camera")
 
 frontEagle = EagleView()
 backEagle = EagleView()
-frontEagle.setDimensions((210, 108), (425, 115), (587, 345), (44, 335))
-backEagle.setDimensions((210, 108), (425, 115), (587, 345), (44, 335))
+frontEagle.setDimensions((149, 195), (439, 207), (528, 380), (37, 374))
+backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
 
 while True:
     _, frontFrame = frontStream.read()
