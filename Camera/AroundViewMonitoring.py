@@ -13,6 +13,9 @@ class avm:
         self.__backEagle = EagleView()
         self.__frontEagle.setDimensions((149, 195), (439, 207), (528, 380), (37, 374))
         self.__backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
+
+        self.__middleView = None
+        self.__counter = 0
     
     def runAVM(self, frontFrame, backFrame):
         frontView = self.__frontCamera.undistort(frontFrame)
@@ -47,10 +50,19 @@ class avm:
     def __getMiddleView(self, topDown_Front):
         # the length of the image represents the distance in front or back of the car
         height_FrontView = topDown_Front.shape[0]
-        
-        realHeight_FrontView = 13 # unit is cm
-        realHeight_MiddleView = 29.5 # unit is cm
-        height_MiddleView = int(realHeight_MiddleView/realHeight_FrontView * height_FrontView)
-        width_MiddleView = int(topDown_Front.shape[1])  
-        middleView = np.zeros((height_MiddleView, width_MiddleView, 3), np.uint8)
-        return middleView
+        if self.__middleView is None:
+            realHeight_FrontView = 13 # unit is cm
+            realHeight_MiddleView = 29.5 # unit is cm
+            ratio = int(height_FrontView/realHeight_FrontView)
+            height_MiddleView = int(realHeight_MiddleView * ratio)
+            width_MiddleView = int(topDown_Front.shape[1])  
+            self.__middleView = np.zeros((height_MiddleView, width_MiddleView, 3), np.uint8)
+            print(ratio)
+        else:
+            num = 10
+            self.__middleView = imutils.translate(self.__middleView, 0, num)
+            self.__middleView[0:num,:,:] = topDown_Front[height_FrontView-1-num:height_FrontView-1,:,:]
+            self.__counter += 1
+            print(self.__counter)
+
+        return self.__middleView
