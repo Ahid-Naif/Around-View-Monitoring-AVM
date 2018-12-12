@@ -1,26 +1,23 @@
+"""
+This code is used draw lines on undistorted images to evaluate the performance of unsdistortion process
+"""
 import cv2
 import numpy as np
 from Camera.Undistortion import UndistortFisheye
-from myPackage.customizedTrackBar import customizedTrackBar
-import glob
+from TrackBar import customizedTrackBar
 
-# balanceTrackBar = customizedTrackBar(0, 0.1, 1, 0, "balance", "Tuning")
-
-undistortFisheye = UndistortFisheye()
+undistortFisheye = UndistortFisheye("Front_Camera")
 
 while True:
     image = cv2.imread("raw.jpg")
 
-    # balance = balanceTrackBar.getValue()
-
     clearImage = undistortFisheye.undistort(image)
     cloneImage = clearImage.copy()
 
-    # clearImages = np.hstack((clearImage1, clearImage2))
     gray = cv2.cvtColor(clearImage,cv2.COLOR_BGR2GRAY)
     edges = cv2.Canny(gray,50,150)
 
-    minLineLength = 100
+    minLineLength = 500
     lines = cv2.HoughLinesP(image=edges,rho=1,theta=np.pi/180, threshold=100,lines=np.array([]), minLineLength=minLineLength,maxLineGap=80)
     if lines is not None:
         a,b,c = lines.shape
