@@ -20,7 +20,7 @@ backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
 while True:
     _, frontFrame = frontStream.read()
     _, backFrame = backStream.read()
-
+    
     frontView = frontCamera.undistort(frontFrame)
     topDown_Front = frontEagle.transfrom(frontView)
     backView = backCamera.undistort(backFrame)
