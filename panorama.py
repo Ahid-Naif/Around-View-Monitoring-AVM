@@ -2,7 +2,7 @@ import cv2
 import imutils
 from imutils.video import FPS
 
-from myPackage.Stitch import stitchTwoImages
+from Camera.Stitcher import stitchTwoImages
 
 count = 0
 totalTime = 0
@@ -20,7 +20,7 @@ while True:
     else:
         image2 = resizedFrame
         fps = FPS().start()
-        stitcher = stitchTwoImages(image1, image2)
+        stitcher = stitchTwoImages(image1, image2, "Right2Left")
         mergedImage = stitcher.stitch()
         fps.stop()
         totalTime = totalTime + fps.elapsed()
