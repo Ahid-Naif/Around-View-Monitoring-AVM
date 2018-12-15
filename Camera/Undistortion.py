@@ -76,19 +76,21 @@ class UndistortFisheye:
         undistortedImage = cv2.remap(image, map1, map2, interpolation=cv2.INTER_LINEAR, borderMode=cv2.BORDER_CONSTANT)
         return undistortedImage
 
-    def undistort2(self, image, balance=0, dim2=None):
-        self.tuneDistortionVictor()
-        dim1 = image.shape[:2][::-1]
-        assert dim1[0]/dim1[1] == self.DIM[0]/self.DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"
+    def undistort2(self, image, balance=0.5, dim2=None):
+        if self.tune:
+            self.tuneDistortionVictor()
+        # dim1 = image.shape[:2][::-1]
+        # assert dim1[0]/dim1[1] == self.DIM[0]/self.DIM[1], "Image to undistort needs to have same aspect ratio as the ones used in calibration"
 
-        if not dim2:
-            dim2 = dim1
+        # if not dim2:
+        #     dim2 = dim1
         
-        Kscaled = self.K * dim1[0]/self.DIM[0] # The values of K is to scale with image dimension
-        Kscaled[2][2] = 1 # the value in 2nd row & 2nd column of K matrix is always 1
+        # Kscaled = self.K * dim1[0]/self.DIM[0] # The values of K is to scale with image dimension
+        # Kscaled[2][2] = 1 # the value in 2nd row & 2nd column of K matrix is always 1
 
-        Knew = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(Kscaled, self.D, dim2, np.eye(3), balance=balance)
-
+        # Knew = cv2.fisheye.estimateNewCameraMatrixForUndistortRectify(Kscaled, self.D, dim2, np.eye(3), balance=balance)
+        Knew = self.K.copy()
+        Knew[(0, 1), (0, 1)] = 0.4 * Knew[(0, 1), (0, 1)]
         undistortedImage = cv2.fisheye.undistortImage(image, self.K, D=self.D, Knew=Knew) # how does work?
 
         return undistortedImage
