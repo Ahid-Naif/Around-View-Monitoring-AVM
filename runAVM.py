@@ -5,8 +5,8 @@ import datetime
 
 # frontStream = cv2.VideoCapture(0)
 # backStream = cv2.VideoCapture(1)
-frontStream = cv2.VideoCapture("front_camera.avi")
-backStream = cv2.VideoCapture("back_camera.avi")
+frontStream = cv2.VideoCapture("dataset/front_camera.avi")
+backStream = cv2.VideoCapture("dataset/back_camera.avi")
 
 avm = avm()
 
