@@ -13,6 +13,8 @@ class avm:
         self.__backEagle = EagleView()
         self.__frontEagle.setDimensions((149, 195), (439, 207), (528, 380), (37, 374))
         self.__backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
+        # self.__frontEagle.setDimensions((186, 195), (484, 207), (588, 402), (97, 363))
+        # self.__backEagle.setDimensions((171, 240), (469, 240), (603, 452), (52, 441))
 
         self.__middleView = None
         self.__counter = 0
