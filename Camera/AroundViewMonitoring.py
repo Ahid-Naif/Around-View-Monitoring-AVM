@@ -3,6 +3,7 @@ import numpy as np
 import imutils
 from Camera.Undistortion import UndistortFisheye
 from Camera.PerspectiveTransformation import EagleView
+from Camera.Stitcher import stitchTwoImages
 
 class avm:
     def __init__(self):
@@ -18,12 +19,17 @@ class avm:
 
         self.__middleView = None
         self.__counter = 0
+
+        self.stitcher = stitchTwoImages("Bottom2Upper")
+        self.upper = None
+        self.bottom = None
     
     def runAVM(self, frontFrame, backFrame):
         frontView = self.__frontCamera.undistort(frontFrame)
         topDown_Front = self.__frontEagle.transfrom(frontView)
         backView = self.__backCamera.undistort(backFrame)
         topDown_Back = self.__backEagle.transfrom(backView)
+        topDown_Back = cv2.flip(topDown_Back, 1)
 
         topDown_Front , topDown_Back = self.__reScale(topDown_Front, topDown_Back)
         middleView = self.__getMiddleView(topDown_Front)
@@ -59,12 +65,29 @@ class avm:
             height_MiddleView = int(realHeight_MiddleView * ratio)
             width_MiddleView = int(topDown_Front.shape[1])  
             self.__middleView = np.zeros((height_MiddleView, width_MiddleView, 3), np.uint8)
-            print(ratio)
+            # print(ratio)
         else:
-            num = 10
-            self.__middleView = imutils.translate(self.__middleView, 0, num)
-            self.__middleView[0:num,:,:] = topDown_Front[height_FrontView-1-num:height_FrontView-1,:,:]
-            self.__counter += 1
-            print(self.__counter)
+            num = 5
+            accumulatedView = topDown_Front[height_FrontView-1-num:height_FrontView-1,:,:]
+            height = accumulatedView.shape[0]
+            self.__middleView = imutils.translate(self.__middleView, 0, height)
+            self.__middleView[0:height,:,:] = accumulatedView
+            # stitchingResult = self.__startStitching(accumulatedView)
+            
+            # if stitchingResult is not None:
+            #     height = stitchingResult.shape[0]
+            #     self.__middleView = imutils.translate(self.__middleView, 0, height)
+            #     self.__middleView[0:height,:,:] = stitchingResult
+            #     # self.__counter += 1
+            #     # print(self.__counter)
 
         return self.__middleView
+
+    def __startStitching(self, accView):
+        if self.bottom is None:
+            self.bottom = accView
+            return None
+        else:
+            self.upper = accView
+            self.bottom = self.stitcher.stitch(self.bottom, self.upper)
+            return self.bottom
