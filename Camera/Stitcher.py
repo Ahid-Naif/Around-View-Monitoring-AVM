@@ -11,27 +11,27 @@ class stitchTwoImages:
         self.kpsDescriptor = computeKeypoints()
 
     def stitch(self, image1, image2):
-        kps1 = self.kpsDetector.detectORB(image1)
-        kps1, des1 = self.kpsDescriptor.computeORB(image1, kps1)
+        kps1 = self.kpsDetector.detectSURF(image1)
+        kps1, des1 = self.kpsDescriptor.computeSURF(image1, kps1)
 
-        kps2 = self.kpsDetector.detectORB(image2)
-        kps2, des2 = self.kpsDescriptor.computeORB(image2, kps2)
-
+        kps2 = self.kpsDetector.detectSURF(image2)
+        kps2, des2 = self.kpsDescriptor.computeSURF(image2, kps2)
         # convert the keypoints from KeyPoint objects to NumPy
         # arrays
         Kps1 = np.float32([kp1.pt for kp1 in kps1])
         Kps2 = np.float32([kp2.pt for kp2 in kps2])
 
         _, homographyMatrix, _ = self.__matchKeypoints(Kps1, Kps2, des1, des2)
+        if homographyMatrix is None:
+            return None
         width_1 = image1.shape[1]
         height_1 = image1.shape[0]
         width_2 = image2.shape[1]
         height_2 = image2.shape[0]
         newHeight, newWidth = self.__getNewDimensions(homographyMatrix, width_1, height_1, width_2, height_2)
-        
         # warp the img1 which is on the right/down
         result = cv2.warpPerspective(image1, homographyMatrix, (newWidth, newHeight))
-
+        result = self.__checkDimensions(result, image2.shape[0], image2.shape[1])
         result[0:height_2, 0:width_2] = image2
         return result
     
@@ -52,7 +52,8 @@ class stitchTwoImages:
             (homographyMatrix, status) = cv2.findHomography(points1, points2, cv2.RANSAC, 4)
             return matches, homographyMatrix, status
         else:
-            return None
+            print("No matches...")
+            return None, None, None
 
     def __getNewDimensions(self, M, width_1, height_1, width_2, height_2):
         x = width_1
@@ -70,3 +71,16 @@ class stitchTwoImages:
             newWidth = width_1
         
         return newHeight , newWidth 
+
+    def __checkDimensions(self, result, inHeight, inWidth):
+        outHeight = result.shape[0]
+        outWidth = result.shape[1]
+        if outHeight < inHeight:
+            diff = inHeight - outHeight
+            toAdd = np.zeros((abs(diff), outWidth, 3), dtype=np.uint8)
+            return np.vstack((result, toAdd))
+        elif outWidth < inWidth:
+            diff = inWidth - outWidth
+            toAdd = np.zeros((outHeight, abs(diff), 3), dtype=np.uint8)
+            return np.hstack((result, toAdd))
+        return result

@@ -8,7 +8,7 @@ from TrackBar.customizedTrackBar import customizedTrackBar
 from Camera.Undistortion import UndistortFisheye
 import cv2
 
-video = cv2.VideoCapture(0)
+# video = cv2.VideoCapture("dataset/front_camera.avi")
 
 camera = UndistortFisheye("Front_Camera")
 
@@ -30,7 +30,8 @@ bottomLeft_XBar = customizedTrackBar(0, 1, width, 0, "x_bottomLeft", "Tuning Par
 bottomLeft_YBar = customizedTrackBar(0, 1, height, height-1, "y_bottomLeft", "Tuning Parameters")
 
 while True:
-    isGrabbed, frame = video.read()
+    # isGrabbed, frame = video.read()
+    frame = cv2.imread("dataset/Front_View.jpg")
 
     topLeft = (int(topLeft_XBar.getValue()), int(topLeft_YBar.getValue()))
     topRight = (int(topRight_XBar.getValue()), int(topRight_YBar.getValue()))
