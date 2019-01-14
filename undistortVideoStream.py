@@ -5,15 +5,17 @@ to get a clear image(undistorted) by remapping it
 import cv2
 from Camera.Undistortion import UndistortFisheye
 
-frontStream = cv2.VideoCapture(0)
-backStream = cv2.VideoCapture(0)
+# frontStream = cv2.VideoCapture(0)
+# backStream = cv2.VideoCapture(0)
 
-frontCamera = UndistortFisheye("Front_Camera")
+frontCamera = UndistortFisheye("Front_Camera", tune=True)
 backCamera = UndistortFisheye("Back_Camera")
 
 while True:
-    _, frontFrame = frontStream.read()
-    _, backFrame = backStream.read()
+    # _, frontFrame = frontStream.read()
+    # _, backFrame = backStream.read()
+    frontFrame = cv2.imread("dataset/Front_View.jpg")
+    backFrame = cv2.imread("dataset/Rear_View.jpg")
 
     frontView = frontCamera.undistort(frontFrame)
     backView = backCamera.undistort(backFrame)

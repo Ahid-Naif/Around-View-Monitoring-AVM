@@ -3,6 +3,8 @@ import numpy as np
 import imutils
 from Camera.Undistortion import UndistortFisheye
 from Camera.PerspectiveTransformation import EagleView
+from Camera.Stitcher import stitchTwoImages
+import time
 
 class avm:
     def __init__(self):
@@ -11,21 +13,27 @@ class avm:
 
         self.__frontEagle = EagleView()
         self.__backEagle = EagleView()
-        self.__frontEagle.setDimensions((149, 195), (439, 207), (528, 380), (37, 374))
-        self.__backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
-        # self.__frontEagle.setDimensions((186, 195), (484, 207), (588, 402), (97, 363))
-        # self.__backEagle.setDimensions((171, 240), (469, 240), (603, 452), (52, 441))
+        # self.__frontEagle.setDimensions((149, 195), (439, 207), (528, 380), (37, 374))
+        # self.__backEagle.setDimensions((164, 229), (469, 229), (588, 430), (45, 435))
+        self.__frontEagle.setDimensions((186, 195), (484, 207), (588, 402), (97, 363))
+        self.__backEagle.setDimensions((171, 240), (469, 240), (603, 452), (52, 441))
 
         self.__middleView = None
         self.__counter = 0
+
+        self.stitcher = stitchTwoImages("Bottom2Upper")
+        self.upper = None
+        self.bottom = None
     
     def runAVM(self, frontFrame, backFrame):
         frontView = self.__frontCamera.undistort(frontFrame)
         topDown_Front = self.__frontEagle.transfrom(frontView)
         backView = self.__backCamera.undistort(backFrame)
         topDown_Back = self.__backEagle.transfrom(backView)
+        topDown_Back = cv2.flip(topDown_Back, 1)
 
         topDown_Front , topDown_Back = self.__reScale(topDown_Front, topDown_Back)
+        # stitchingResult = self.__startStitching(topDown_Front)
         middleView = self.__getMiddleView(topDown_Front)
         birdView = np.vstack((topDown_Front, middleView, topDown_Back))
         return birdView
@@ -59,12 +67,20 @@ class avm:
             height_MiddleView = int(realHeight_MiddleView * ratio)
             width_MiddleView = int(topDown_Front.shape[1])  
             self.__middleView = np.zeros((height_MiddleView, width_MiddleView, 3), np.uint8)
-            print(ratio)
-        else:
-            num = 10
-            self.__middleView = imutils.translate(self.__middleView, 0, num)
-            self.__middleView[0:num,:,:] = topDown_Front[height_FrontView-1-num:height_FrontView-1,:,:]
-            self.__counter += 1
-            print(self.__counter)
+            # print(ratio)
+        # else:
+        #     # self.__middleView[0:stitchingResult.shape[0], :]
 
         return self.__middleView
+
+    def __startStitching(self, accView):
+        if self.bottom is None:
+            self.bottom = accView
+            return None
+        else:
+            # time.sleep(0.5)
+            self.upper = accView
+            self.bottom = self.stitcher.stitch(self.bottom, self.upper)
+            cv2.imshow("Result", self.bottom)
+            height = accView.shape[0]
+            return self.bottom[height:self.bottom.shape[0], :]
