@@ -5,8 +5,8 @@ import datetime
 
 # frontStream = cv2.VideoCapture(0)
 # backStream = cv2.VideoCapture(1)
-# frontStream = cv2.VideoCapture("dataset/front_camera.avi")
-# backStream = cv2.VideoCapture("dataset/back_camera.avi")
+frontStream = cv2.VideoCapture("dataset/front_camera.avi")
+backStream = cv2.VideoCapture("dataset/back_camera.avi")
 
 avm = avm()
 
@@ -14,13 +14,13 @@ avm = avm()
 # backFrame = cv2.imread("Back_View.jpg")
 startTime = datetime.datetime.now()
 while True:
-    # isGrabbed, frontFrame = frontStream.read()
-    # isGrabbed2, backFrame = backStream.read()
-    # if not isGrabbed or not isGrabbed2:
-    #     break
+    isGrabbed, frontFrame = frontStream.read()
+    isGrabbed2, backFrame = backStream.read()
+    if not isGrabbed or not isGrabbed2:
+        break
 
-    frontFrame = cv2.imread("dataset/Front_View.jpg")
-    backFrame = cv2.imread("dataset/Rear_View.jpg")
+    # frontFrame = cv2.imread("dataset/Front_View.jpg")
+    # backFrame = cv2.imread("dataset/Rear_View.jpg")
 
     birdView = avm.runAVM(frontFrame, backFrame)
     cv2.imshow("Bird's Eye View", birdView)
